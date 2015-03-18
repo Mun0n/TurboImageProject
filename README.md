@@ -6,7 +6,7 @@
 
 TurboImageView let you to add a complete interactive ImageView to your interface!
 
-![Automatic banner with one visualization](https://github.com/Mun0n/TurboImageProject/screenshot.gif)
+![TurboImageView preview](screenshot.gif)
 
 With this ImageView you can drag, resize and rotate your drawables. Easy to implement, follow this simple steps:
 
