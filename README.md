@@ -6,7 +6,7 @@
 
 TurboImageView let you to add a complete interactive ImageView to your interface!
 
-//![Automatic banner with one visualization](http://mobusiapps.github.io/MobusiSDK-iOS/images/banner-auto-1.png)
+![Automatic banner with one visualization](https://github.com/Mun0n/TurboImageProject/screenshot.gif)
 
 With this ImageView you can drag, resize and rotate your drawables. Easy to implement, follow this simple steps:
 
@@ -33,6 +33,3 @@ turboImageView.loadImages(this, R.drawable.ic_launcher);
 
 DONE!
 
-
-
-3. 
