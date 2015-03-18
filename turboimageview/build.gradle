@@ -28,7 +28,7 @@ publish {
   userOrg = 'mun0n'
   groupId = 'com.munon'
   artifactId = 'turboimageview'
-  version = '1.0.0'
+  version = '1.0.1'
   description =
       'TurboImageView let you to add a complete interactive ImageView to your interface!'
   website = 'https://github.com/Mun0n/TurboImageProject'
