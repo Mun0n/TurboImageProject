@@ -54,7 +54,7 @@ public class TurboImageView extends View implements
 				metrics.widthPixels, metrics.heightPixels);
 	}
 
-	public void loadImages1(Context context, int resourceId) {
+	public void loadImages(Context context, int resourceId) {
 		Resources res = context.getResources();
 		mImages.add(new ImageObject(resourceId, res));
 		float cx = SCREEN_MARGIN
