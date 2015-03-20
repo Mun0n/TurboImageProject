@@ -31,5 +31,7 @@ compile 'com.munon:turboimageview:1.0.1'
 turboImageView.loadImages(this, R.drawable.ic_launcher);
 ````
 
+Thanks to [hrules6872](https://github.com/hrules6872) and [alexruperez](https://github.com/alexruperez) for helping me to upload this lib to github and maven! 
+
 DONE!
 
