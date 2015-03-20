@@ -2,25 +2,46 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white" >
+    android:background="@android:color/white"
+    >
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:background="@drawable/background"
-        android:scaleType="fitStart" />
+  <ImageView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_centerInParent="true"
+      android:background="@drawable/background"
+      android:scaleType="fitStart"
+      />
 
-    <com.munon.turboimageview.TurboImageView
-        android:id="@+id/turboImageView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+  <com.munon.turboimageview.TurboImageView
+      android:id="@+id/turboImageView"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      />
 
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      android:weightSum="2"
+      android:layout_alignParentBottom="true"
+      >
     <Button
         android:id="@+id/addButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:text="@string/draw" />
+        android:text="@string/draw"
+        android:layout_weight="1"
+        />
+
+    <Button
+        android:id="@+id/removeButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/remove"
+        android:layout_weight="1"
+        />
+
+  </LinearLayout>
 
 </RelativeLayout>
