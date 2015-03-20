@@ -57,10 +57,8 @@ public class TurboImageView extends View implements
     public void loadImages(Context context, int resourceId) {
         Resources res = context.getResources();
         mImages.add(new ImageObject(resourceId, res));
-        float cx = SCREEN_MARGIN
-            + (float) (Math.random() * (displayWidth - 2 * SCREEN_MARGIN));
-        float cy = SCREEN_MARGIN
-            + (float) (Math.random() * (displayHeight - 2 * SCREEN_MARGIN));
+        float cx = getX() + getWidth()  / 2;
+        float cy = getY() + getHeight() / 2;
         mImages.get(mImages.size() - 1).load(context, cx, cy);
         invalidate();
     }
