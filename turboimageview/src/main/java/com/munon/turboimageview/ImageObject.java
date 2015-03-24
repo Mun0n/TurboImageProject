@@ -2,7 +2,12 @@ package com.munon.turboimageview;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.DashPathEffect;
+import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 
 public class ImageObject extends MultiTouchObject {
@@ -10,18 +15,23 @@ public class ImageObject extends MultiTouchObject {
     private static final double INITIAL_SCALE_FACTOR = 0.15;
 
     private transient Drawable mDrawable;
+    private Bitmap cancelBitmap;
+    private Paint borderPaint;
+    private Paint cancelPaint;
+    private Resources res;
 
     private int mResourceId;
 
-    public ImageObject(int resourceId, Resources res)  {
+    public ImageObject(int resourceId, Resources res) {
         super(res);
-
+        this.res = res;
         mResourceId = resourceId;
+        initPaint();
     }
 
     public ImageObject(ImageObject e, Resources res) {
         super(res);
-
+        this.res = res;
         mDrawable = e.mDrawable;
         mResourceId = e.mResourceId;
         mScaleX = e.mScaleX;
@@ -29,6 +39,21 @@ public class ImageObject extends MultiTouchObject {
         mCenterX = e.mCenterX;
         mCenterY = e.mCenterY;
         mAngle = e.mAngle;
+        initPaint();
+    }
+
+    public void initPaint() {
+
+        cancelBitmap = BitmapFactory.decodeResource(res, R.drawable.cancel);
+
+        cancelPaint = new Paint();
+
+        borderPaint = new Paint();
+        borderPaint.setStyle(Paint.Style.STROKE);
+        borderPaint.setColor(Color.BLACK);
+        borderPaint.setAntiAlias(true);
+        borderPaint.setStrokeWidth(3.0f);
+        borderPaint.setPathEffect(new DashPathEffect(new float[]{10, 20}, 0));
     }
 
     public void draw(Canvas canvas) {
@@ -44,6 +69,11 @@ public class ImageObject extends MultiTouchObject {
         canvas.translate(-dx, -dy);
 
         mDrawable.draw(canvas);
+
+        if (mIsLatestSelected) {
+            canvas.drawRect((int) mMinX, (int) mMinY, (int) mMaxX, (int) mMaxY, borderPaint);
+            canvas.drawBitmap(cancelBitmap, mMinX - (cancelBitmap.getWidth() / 2), mMinY - (cancelBitmap.getHeight() / 2), cancelPaint);
+        }
 
         canvas.restore();
     }
@@ -80,7 +110,7 @@ public class ImageObject extends MultiTouchObject {
             centerY = startMidY;
 
             float scaleFactor = (float) (Math.max(mDisplayWidth, mDisplayHeight) /
-                    (float) Math.max(mWidth, mHeight) * INITIAL_SCALE_FACTOR);
+                (float) Math.max(mWidth, mHeight) * INITIAL_SCALE_FACTOR);
             scaleX = scaleY = scaleFactor;
             angle = 0.0f;
 
