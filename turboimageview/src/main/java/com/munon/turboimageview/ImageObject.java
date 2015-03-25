@@ -3,7 +3,6 @@ package com.munon.turboimageview;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
@@ -17,7 +16,6 @@ public class ImageObject extends MultiTouchObject {
     private transient Drawable mDrawable;
     private Bitmap cancelBitmap;
     private Paint borderPaint;
-    private Paint cancelPaint;
     private Resources res;
 
     private int mResourceId;
@@ -44,7 +42,6 @@ public class ImageObject extends MultiTouchObject {
 
     public void initPaint() {
         //cancelBitmap = BitmapFactory.decodeResource(res, R.drawable.cancel);
-        //cancelPaint = new Paint();
 
         borderPaint = new Paint();
         borderPaint.setStyle(Paint.Style.STROKE);
@@ -71,7 +68,7 @@ public class ImageObject extends MultiTouchObject {
         if (mIsLatestSelected) {
             canvas.drawRect((int) mMinX, (int) mMinY, (int) mMaxX, (int) mMaxY, borderPaint);
             /*Ready to show an x to delete the view but imposible to detect when the x is touched*/
-            //canvas.drawBitmap(cancelBitmap, mMinX - (cancelBitmap.getWidth() / 2), mMinY - (cancelBitmap.getHeight() / 2), cancelPaint);
+            //canvas.drawBitmap(cancelBitmap, mMinX - (cancelBitmap.getWidth() / 2), mMinY - (cancelBitmap.getHeight() / 2), new Paint());
         }
 
         canvas.restore();
@@ -124,7 +121,11 @@ public class ImageObject extends MultiTouchObject {
         setPos(centerX, centerY, scaleX, scaleY, mAngle);
     }
 
-    public void setLastSelected(boolean selected){
+    public void setLastSelected(boolean selected) {
         mIsLatestSelected = selected;
+    }
+
+    public boolean isSelected() {
+        return mIsLatestSelected;
     }
 }

@@ -1,14 +1,15 @@
 package com.munon.turboimageproject;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-
 import com.munon.turboimageview.TurboImageView;
 
 
 public class SampleActivity extends ActionBarActivity {
+    private static final String TAG = "SampleActivity";
 
     private Button drawButton;
     private TurboImageView turboImageView;
@@ -34,7 +35,8 @@ public class SampleActivity extends ActionBarActivity {
         removeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                turboImageView.deleteSelectedObject();
+                boolean deleted = turboImageView.deleteSelectedObject();
+                Log.d(TAG, "deleted: " + deleted);
             }
         });
 

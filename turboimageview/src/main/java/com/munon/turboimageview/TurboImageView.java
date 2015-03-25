@@ -9,12 +9,10 @@ import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
-
-import com.munon.turboimageview.MultiTouchController.MultiTouchObjectCanvas;
 import com.munon.turboimageview.MultiTouchController.PointInfo;
 import com.munon.turboimageview.MultiTouchController.PositionAndScale;
-
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class TurboImageView extends View implements
     MultiTouchObjectCanvas<MultiTouchObject> {
@@ -60,7 +58,7 @@ public class TurboImageView extends View implements
         ImageObject imageObject = new ImageObject(resourceId, res);
         imageObject.setLastSelected(true);
         mImages.add(imageObject);
-        float cx = getX() + getWidth()  / 2;
+        float cx = getX() + getWidth() / 2;
         float cy = getY() + getHeight() / 2;
         mImages.get(mImages.size() - 1).load(context, cx, cy);
         invalidate();
@@ -118,18 +116,43 @@ public class TurboImageView extends View implements
     @Override
     public void deselectAll() {
         for (int i = 0; i < mImages.size(); i++) {
-            mImages.get(i).mIsLatestSelected=false;
+            mImages.get(i).mIsLatestSelected = false;
             invalidate();
         }
 
     }
 
     @Override
-    public void deleteSelectedObject() {
-        if (mImages.size() > 0) {
-            mImages.remove(mImages.size() - 1);
-            invalidate();
+    public boolean deleteSelectedObject() {
+        boolean deleted = false;
+        Iterator<MultiTouchObject> iter = mImages.iterator();
+        while (iter.hasNext()) {
+            if (iter.next().isLatestSelected()) {
+                iter.remove();
+                deleted = true;
+            }
         }
+
+        invalidate();
+        return deleted;
+    }
+
+    @Override
+    public int getSelectedObjectCount() {
+        int count = 0;
+        if (mImages.size() > 0) {
+            for (int i = 0; i < mImages.size(); i++) {
+                if (mImages.get(i).isLatestSelected()) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    @Override
+    public int getObjectCount() {
+        return mImages.size();
     }
 
     /**
