@@ -13,6 +13,7 @@ public class SampleActivity extends ActionBarActivity {
     private Button drawButton;
     private TurboImageView turboImageView;
     private Button removeButton;
+    private Button deselectButon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +35,14 @@ public class SampleActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 turboImageView.deleteSelectedObject();
+            }
+        });
+
+        deselectButon = (Button) findViewById(R.id.deselectButton);
+        deselectButon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                turboImageView.deselectAll();
             }
         });
     }

@@ -23,12 +23,12 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="horizontal"
-      android:weightSum="2"
+      android:weightSum="3"
       android:layout_alignParentBottom="true"
       >
     <Button
         android:id="@+id/addButton"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/draw"
         android:layout_weight="1"
@@ -36,9 +36,17 @@
 
     <Button
         android:id="@+id/removeButton"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/remove"
+        android:layout_weight="1"
+        />
+
+    <Button
+        android:id="@+id/deselectButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/deselect"
         android:layout_weight="1"
         />
 

@@ -196,4 +196,12 @@ public abstract class MultiTouchObject implements Serializable {
     public boolean isGrabAreaSelected() {
         return mIsGrabAreaSelected;
     }
+
+    public boolean ismIsLatestSelected() {
+        return mIsLatestSelected;
+    }
+
+    public void setmIsLatestSelected(boolean mIsLatestSelected) {
+        this.mIsLatestSelected = mIsLatestSelected;
+    }
 }

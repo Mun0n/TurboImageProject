@@ -43,10 +43,8 @@ public class ImageObject extends MultiTouchObject {
     }
 
     public void initPaint() {
-
-        cancelBitmap = BitmapFactory.decodeResource(res, R.drawable.cancel);
-
-        cancelPaint = new Paint();
+        //cancelBitmap = BitmapFactory.decodeResource(res, R.drawable.cancel);
+        //cancelPaint = new Paint();
 
         borderPaint = new Paint();
         borderPaint.setStyle(Paint.Style.STROKE);
@@ -72,7 +70,8 @@ public class ImageObject extends MultiTouchObject {
 
         if (mIsLatestSelected) {
             canvas.drawRect((int) mMinX, (int) mMinY, (int) mMaxX, (int) mMaxY, borderPaint);
-            canvas.drawBitmap(cancelBitmap, mMinX - (cancelBitmap.getWidth() / 2), mMinY - (cancelBitmap.getHeight() / 2), cancelPaint);
+            /*Ready to show an x to delete the view but imposible to detect when the x is touched*/
+            //canvas.drawBitmap(cancelBitmap, mMinX - (cancelBitmap.getWidth() / 2), mMinY - (cancelBitmap.getHeight() / 2), cancelPaint);
         }
 
         canvas.restore();
@@ -123,5 +122,9 @@ public class ImageObject extends MultiTouchObject {
             angle = mAngle;
         }
         setPos(centerX, centerY, scaleX, scaleY, mAngle);
+    }
+
+    public void setLastSelected(boolean selected){
+        mIsLatestSelected = selected;
     }
 }

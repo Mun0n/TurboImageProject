@@ -56,7 +56,10 @@ public class TurboImageView extends View implements
 
     public void loadImages(Context context, int resourceId) {
         Resources res = context.getResources();
-        mImages.add(new ImageObject(resourceId, res));
+        deselectAll();
+        ImageObject imageObject = new ImageObject(resourceId, res);
+        imageObject.setLastSelected(true);
+        mImages.add(imageObject);
         float cx = getX() + getWidth()  / 2;
         float cy = getY() + getHeight() / 2;
         mImages.get(mImages.size() - 1).load(context, cx, cy);
@@ -112,6 +115,16 @@ public class TurboImageView extends View implements
         invalidate();
     }
 
+    @Override
+    public void deselectAll() {
+        for (int i = 0; i < mImages.size(); i++) {
+            mImages.get(i).mIsLatestSelected=false;
+            invalidate();
+        }
+
+    }
+
+    @Override
     public void deleteSelectedObject() {
         if (mImages.size() > 0) {
             mImages.remove(mImages.size() - 1);
