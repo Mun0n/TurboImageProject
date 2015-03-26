@@ -4,48 +4,41 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 
 public class ImageObject extends MultiTouchObject {
-
     private static final double INITIAL_SCALE_FACTOR = 0.15;
 
     private transient Drawable mDrawable;
     private Bitmap cancelBitmap;
-    private Paint borderPaint;
-    private Resources res;
 
     private int mResourceId;
 
     public ImageObject(int resourceId, Resources res) {
         super(res);
-        this.res = res;
         mResourceId = resourceId;
         initPaint();
     }
 
-    public ImageObject(ImageObject e, Resources res) {
+    public ImageObject(ImageObject imageObject, Resources res) {
         super(res);
-        this.res = res;
-        mDrawable = e.mDrawable;
-        mResourceId = e.mResourceId;
-        mScaleX = e.mScaleX;
-        mScaleY = e.mScaleY;
-        mCenterX = e.mCenterX;
-        mCenterY = e.mCenterY;
-        mAngle = e.mAngle;
+        mDrawable = imageObject.mDrawable;
+        mResourceId = imageObject.mResourceId;
+        mScaleX = imageObject.mScaleX;
+        mScaleY = imageObject.mScaleY;
+        mCenterX = imageObject.mCenterX;
+        mCenterY = imageObject.mCenterY;
+        mAngle = imageObject.mAngle;
         initPaint();
     }
 
     public void initPaint() {
         //cancelBitmap = BitmapFactory.decodeResource(res, R.drawable.cancel);
 
-        borderPaint = new Paint();
         borderPaint.setStyle(Paint.Style.STROKE);
-        borderPaint.setColor(Color.BLACK);
+        borderPaint.setColor(borderColor);
         borderPaint.setAntiAlias(true);
         borderPaint.setStrokeWidth(3.0f);
         borderPaint.setPathEffect(new DashPathEffect(new float[]{10, 20}, 0));
@@ -67,7 +60,7 @@ public class ImageObject extends MultiTouchObject {
 
         if (mIsLatestSelected) {
             canvas.drawRect((int) mMinX, (int) mMinY, (int) mMaxX, (int) mMaxY, borderPaint);
-            /*Ready to show an x to delete the view but imposible to detect when the x is touched*/
+            /*Ready to show an X button to delete the view but impossible to detect when that X button is touched*/
             //canvas.drawBitmap(cancelBitmap, mMinX - (cancelBitmap.getWidth() / 2), mMinY - (cancelBitmap.getHeight() / 2), new Paint());
         }
 
@@ -83,10 +76,11 @@ public class ImageObject extends MultiTouchObject {
     }
 
     /** Called by activity's onResume() method to load the images */
+    @SuppressWarnings("deprecation")
     @Override
     public void load(Context context, float startMidX, float startMidY) {
         Resources res = context.getResources();
-        getMetrics(res);
+        init(res);
 
         mStartMidX = startMidX;
         mStartMidY = startMidY;
@@ -118,14 +112,6 @@ public class ImageObject extends MultiTouchObject {
             scaleY = mScaleY;
             angle = mAngle;
         }
-        setPos(centerX, centerY, scaleX, scaleY, mAngle);
-    }
-
-    public void setLastSelected(boolean selected) {
-        mIsLatestSelected = selected;
-    }
-
-    public boolean isSelected() {
-        return mIsLatestSelected;
+        setPos(centerX, centerY, scaleX, scaleY, angle);
     }
 }
