@@ -1,30 +1,32 @@
 package com.munon.turboimageview;
 
 import android.content.Context;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
-import com.munon.turboimageview.MultiTouchController.PointInfo;
-import com.munon.turboimageview.MultiTouchController.PositionAndScale;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class TurboImageView extends View implements
-    MultiTouchObjectCanvas<MultiTouchObject> {
+public class TurboImageView extends View implements MultiTouchObjectCanvas<MultiTouchObject> {
+    private static final String TAG = "TurboImageView";
 
-    private ArrayList<MultiTouchObject> mImages = new ArrayList<MultiTouchObject>();
-    private MultiTouchController<MultiTouchObject> multiTouchController = new MultiTouchController<MultiTouchObject>(
+    private ArrayList<MultiTouchObject> mImages = new ArrayList<>();
+    private MultiTouchController<MultiTouchObject> multiTouchController = new MultiTouchController<>(
         this);
-    private PointInfo currTouchPoint = new PointInfo();
-    private static final int UI_MODE_ROTATE = 1, UI_MODE_ANISOTROPIC_SCALE = 2;
-    private int mUIMode = UI_MODE_ROTATE;
-    private static final float SCREEN_MARGIN = 100;
-    private int displayWidth, displayHeight;
+
+    private final PointInfo currTouchPoint = new PointInfo();
+
+    private static final int UI_MODE_ROTATE = 1;
+    private static final int UI_MODE_ANISOTROPIC_SCALE = 2;
+    private static final int mUIMode = UI_MODE_ROTATE;
+
+    private TurboImageViewListener listener;
+    private int objectBorderColor = MultiTouchObject.DEFAULT_BORDER_COLOR;
+
+    private boolean selectOnObjectAdded = true;
 
     public TurboImageView(Context context) {
         this(context, null);
@@ -36,48 +38,49 @@ public class TurboImageView extends View implements
 
     public TurboImageView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        init(context);
+        init();
     }
 
-    private void init(Context context) {
-        Resources res = context.getResources();
+    private void init() {
         setBackgroundColor(Color.TRANSPARENT);
-
-        DisplayMetrics metrics = res.getDisplayMetrics();
-        this.displayWidth = res.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ? Math
-            .max(metrics.widthPixels, metrics.heightPixels) : Math.min(
-            metrics.widthPixels, metrics.heightPixels);
-        this.displayHeight = res.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ? Math
-            .min(metrics.widthPixels, metrics.heightPixels) : Math.max(
-            metrics.widthPixels, metrics.heightPixels);
     }
 
-    public void loadImages(Context context, int resourceId) {
-        Resources res = context.getResources();
+    public void addImage(Context context, int resourceId) {
         deselectAll();
-        ImageObject imageObject = new ImageObject(resourceId, res);
-        imageObject.setLastSelected(true);
+
+        ImageObject imageObject = new ImageObject(resourceId, context.getResources());
+        imageObject.setSelected(selectOnObjectAdded);
+        imageObject.setBorderColor(objectBorderColor);
         mImages.add(imageObject);
+
         float cx = getX() + getWidth() / 2;
         float cy = getY() + getHeight() / 2;
         mImages.get(mImages.size() - 1).load(context, cx, cy);
+
         invalidate();
+    }
+
+    public void setObjectSelectedBorderColor(int borderColor) {
+        this.objectBorderColor = borderColor;
+        for (MultiTouchObject imageObject : mImages) {
+            imageObject.setBorderColor(borderColor);
+        }
+        invalidate();
+    }
+
+    public int getObjectSelectedBorderColor() {
+        return this.objectBorderColor;
     }
 
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        int n = mImages.size();
-        for (int i = 0; i < n; i++)
-            mImages.get(i).draw(canvas);
-    }
-
-    public void trackballClicked() {
-        mUIMode = (mUIMode + 1) % 3;
-        invalidate();
+        for (MultiTouchObject imageObject : mImages) {
+            imageObject.draw(canvas);
+        }
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(@NonNull MotionEvent event) {
         return multiTouchController.onTouchEvent(event);
     }
 
@@ -85,13 +88,15 @@ public class TurboImageView extends View implements
      * Get the image that is under the single-touch point, or return null
      * (canceling the drag op) if none
      */
-    public MultiTouchObject getDraggableObjectAtPoint(PointInfo pt) {
-        float x = pt.getX(), y = pt.getY();
-        int n = mImages.size();
-        for (int i = n - 1; i >= 0; i--) {
-            ImageObject im = (ImageObject) mImages.get(i);
-            if (im.containsPoint(x, y))
-                return im;
+    public MultiTouchObject getDraggableObjectAtPoint(PointInfo touchPoint) {
+        float x = touchPoint.getX();
+        float y = touchPoint.getY();
+
+        for (int i = mImages.size() - 1; i >= 0; i--) {
+            ImageObject imageObject = (ImageObject) mImages.get(i);
+            if (imageObject.containsPoint(x, y)) {
+                return imageObject;
+            }
         }
         return null;
     }
@@ -101,34 +106,45 @@ public class TurboImageView extends View implements
      * under the point (non-null is returned by getDraggableObjectAtPoint()) and
      * a drag operation is starting. Called with null when drag op ends.
      */
-    public void selectObject(MultiTouchObject img, PointInfo touchPoint) {
+    public void selectObject(MultiTouchObject multiTouchObject, PointInfo touchPoint) {
         currTouchPoint.set(touchPoint);
-        if (img != null) {
+        if (multiTouchObject != null) {
             // Move image to the top of the stack when selected
-            mImages.remove(img);
-            mImages.add(img);
+            mImages.remove(multiTouchObject);
+            mImages.add(multiTouchObject);
+            if (listener != null) {
+                listener.onImageObjectSelected(multiTouchObject);
+            }
         } else {
-            // Called with img == null when drag stops.
+            // Called with multiTouchObject == null when drag stops.
+            if (listener != null) {
+                listener.onImageObjectDropped();
+            }
         }
         invalidate();
     }
 
     @Override
     public void deselectAll() {
-        for (int i = 0; i < mImages.size(); i++) {
-            mImages.get(i).mIsLatestSelected = false;
-            invalidate();
+        for (MultiTouchObject imageObject : mImages) {
+            imageObject.setSelected(false);
         }
-
+        invalidate();
     }
 
     @Override
+    public void canvasTouched() {
+        if (listener != null) {
+            listener.onCanvasTouched();
+        }
+    }
+
     public boolean deleteSelectedObject() {
         boolean deleted = false;
-        Iterator<MultiTouchObject> iter = mImages.iterator();
-        while (iter.hasNext()) {
-            if (iter.next().isLatestSelected()) {
-                iter.remove();
+        Iterator<MultiTouchObject> iterator = mImages.iterator();
+        while (iterator.hasNext()) {
+            if (iterator.next().isSelected()) {
+                iterator.remove();
                 deleted = true;
             }
         }
@@ -137,49 +153,69 @@ public class TurboImageView extends View implements
         return deleted;
     }
 
-    @Override
+    public boolean deleteAllObjects() {
+        boolean deleted = false;
+        Iterator<MultiTouchObject> iterator = mImages.iterator();
+        while (iterator.hasNext()) {
+            iterator.remove();
+            deleted = true;
+        }
+
+        invalidate();
+        return deleted;
+    }
+
     public int getSelectedObjectCount() {
         int count = 0;
-        if (mImages.size() > 0) {
-            for (int i = 0; i < mImages.size(); i++) {
-                if (mImages.get(i).isLatestSelected()) {
-                    count++;
-                }
+        for (MultiTouchObject imageObject : mImages) {
+            if (imageObject.isSelected()) {
+                count++;
             }
         }
         return count;
     }
 
-    @Override
     public int getObjectCount() {
         return mImages.size();
+    }
+
+    public void setListener(TurboImageViewListener turboImageViewListener) {
+        this.listener = turboImageViewListener;
     }
 
     /**
      * Get the current position and scale of the selected image. Called whenever
      * a drag starts or is reset.
      */
-    public void getPositionAndScale(MultiTouchObject img,
-                                    PositionAndScale objPosAndScaleOut) {
-        objPosAndScaleOut.set(img.getCenterX(), img.getCenterY(),
+    public void getPositionAndScale(MultiTouchObject multiTouchObject, PositionAndScale objPosAndScaleOut) {
+        objPosAndScaleOut.set(multiTouchObject.getCenterX(), multiTouchObject.getCenterY(),
             (mUIMode & UI_MODE_ANISOTROPIC_SCALE) == 0,
-            (img.getScaleX() + img.getScaleY()) / 2,
-            (mUIMode & UI_MODE_ANISOTROPIC_SCALE) != 0, img.getScaleX(),
-            img.getScaleY(), (mUIMode & UI_MODE_ROTATE) != 0,
-            img.getAngle());
+            (multiTouchObject.getScaleX() + multiTouchObject.getScaleY()) / 2,
+            (mUIMode & UI_MODE_ANISOTROPIC_SCALE) != 0, multiTouchObject.getScaleX(),
+            multiTouchObject.getScaleY(), (mUIMode & UI_MODE_ROTATE) != 0,
+            multiTouchObject.getAngle());
     }
 
     /** Set the position and scale of the dragged/stretched image. */
-    public boolean setPositionAndScale(MultiTouchObject img,
+    public boolean setPositionAndScale(MultiTouchObject multiTouchObject,
                                        PositionAndScale newImgPosAndScale, PointInfo touchPoint) {
         currTouchPoint.set(touchPoint);
-        boolean ok = ((ImageObject) img).setPos(newImgPosAndScale);
-        if (ok)
+        boolean moved = multiTouchObject.setPos(newImgPosAndScale);
+        if (moved) {
             invalidate();
-        return ok;
+        }
+        return moved;
     }
 
-    public boolean pointInObjectGrabArea(PointInfo pt, MultiTouchObject img) {
+    public boolean pointInObjectGrabArea(PointInfo touchPoint, MultiTouchObject multiTouchObject) {
         return false;
+    }
+
+    public boolean isSelectOnObjectAdded() {
+        return selectOnObjectAdded;
+    }
+
+    public void setSelectOnObjectAdded(boolean selectOnObjectAdded) {
+        this.selectOnObjectAdded = selectOnObjectAdded;
     }
 }

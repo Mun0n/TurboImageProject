@@ -6,10 +6,12 @@ import android.util.Log;
 
 import android.view.View;
 import android.widget.Button;
+import com.munon.turboimageview.MultiTouchObject;
 import com.munon.turboimageview.TurboImageView;
+import com.munon.turboimageview.TurboImageViewListener;
 
 
-public class SampleActivity extends ActionBarActivity {
+public class SampleActivity extends ActionBarActivity implements TurboImageViewListener {
     private static final String TAG = "SampleActivity";
 
     private TurboImageView turboImageView;
@@ -20,12 +22,13 @@ public class SampleActivity extends ActionBarActivity {
         setContentView(R.layout.activity_sample);
 
         turboImageView = (TurboImageView) findViewById(R.id.turboImageView);
+        turboImageView.setListener(this);
 
         Button drawButton = (Button) findViewById(R.id.addButton);
         drawButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                turboImageView.loadImages(SampleActivity.this, R.drawable.ic_launcher);
+                turboImageView.addImage(SampleActivity.this, R.drawable.ic_launcher);
             }
         });
 
@@ -47,4 +50,19 @@ public class SampleActivity extends ActionBarActivity {
         });
     }
 
+    @Override
+    public void onImageObjectSelected(MultiTouchObject multiTouchObject) {
+        Log.d(TAG, "image object selected");
+    }
+
+    @Override
+    public void onImageObjectDropped() {
+        Log.d(TAG, "image object dropped");
+    }
+
+    @Override
+    public void onCanvasTouched() {
+        turboImageView.deselectAll();
+        Log.d(TAG, "canvas touched");
+    }
 }

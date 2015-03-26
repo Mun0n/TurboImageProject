@@ -4,11 +4,9 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.DisplayMetrics;
-
-import com.munon.turboimageview.MultiTouchController.PositionAndScale;
-
 import java.io.Serializable;
 
 public abstract class MultiTouchObject implements Serializable {
@@ -16,6 +14,10 @@ public abstract class MultiTouchObject implements Serializable {
     protected boolean mFirstLoad = true;
 
     protected transient Paint mPaint = new Paint();
+    protected final transient Paint borderPaint = new Paint();
+
+    protected static final int DEFAULT_BORDER_COLOR = Color.BLACK;
+    protected int borderColor = DEFAULT_BORDER_COLOR;
 
     protected int mWidth;
     protected int mHeight;
@@ -47,18 +49,19 @@ public abstract class MultiTouchObject implements Serializable {
     protected float mStartMidX;
     protected float mStartMidY;
 
-	private static final int UI_MODE_ROTATE = 1;
+    private static final int UI_MODE_ROTATE = 1;
     private static final int UI_MODE_ANISOTROPIC_SCALE = 2;
-    protected int mUIMode = UI_MODE_ROTATE;
+    protected final int mUIMode = UI_MODE_ROTATE;
 
     public MultiTouchObject() {
+        // empty constructor
     }
 
     public MultiTouchObject(Resources res) {
-        getMetrics(res);
+        init(res);
     }
 
-    protected void getMetrics(Resources res) {
+    protected void init(Resources res) {
         DisplayMetrics metrics = res.getDisplayMetrics();
         mDisplayWidth =
             (res.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
@@ -90,10 +93,10 @@ public abstract class MultiTouchObject implements Serializable {
         }
 
         return setPos(newImgPosAndScale.getXOff(),
-                      newImgPosAndScale.getYOff(),
-                      newScaleX,
-                      newScaleY,
-                      newImgPosAndScale.getAngle());
+            newImgPosAndScale.getYOff(),
+            newScaleX,
+            newScaleY,
+            newImgPosAndScale.getAngle());
     }
 
     /**
@@ -132,17 +135,19 @@ public abstract class MultiTouchObject implements Serializable {
 
     public boolean grabAreaContainsPoint(float touchX, float touchY) {
         return (touchX >= mGrabAreaX1 && touchX <= mGrabAreaX2 &&
-                touchY >= mGrabAreaY1 && touchY <= mGrabAreaY2);
+            touchY >= mGrabAreaY1 && touchY <= mGrabAreaY2);
     }
 
     public void reload(Context context) {
         mFirstLoad = false; // Let the load know properties have changed so reload those,
-                            // don't go back and start with defaults
+        // don't go back and start with defaults
         load(context, mCenterX, mCenterY);
     }
 
     public abstract void draw(Canvas canvas);
+
     public abstract void load(Context context, float startMidX, float startMidY);
+
     public abstract void unload();
 
     public int getWidth() {
@@ -197,11 +202,20 @@ public abstract class MultiTouchObject implements Serializable {
         return mIsGrabAreaSelected;
     }
 
-    public boolean isLatestSelected() {
+    public boolean isSelected() {
         return mIsLatestSelected;
     }
 
-    public void setLatestSelected(boolean mIsLatestSelected) {
-        this.mIsLatestSelected = mIsLatestSelected;
+    public void setSelected(boolean selected) {
+        this.mIsLatestSelected = selected;
+    }
+
+    public int getBorderColor() {
+        return borderColor;
+    }
+
+    public void setBorderColor(int borderColor) {
+        this.borderColor = borderColor;
+        borderPaint.setColor(borderColor);
     }
 }

@@ -17,12 +17,12 @@ public interface MultiTouchObjectCanvas<T> {
      * canvas (e.g. in a photo viewer), always return non-null, otherwise
      * the stretch operation won't work.
      */
-    public T getDraggableObjectAtPoint(MultiTouchController.PointInfo touchPoint);
+    public T getDraggableObjectAtPoint(PointInfo touchPoint);
 
     /**
      * TODO: document
      */
-    public boolean pointInObjectGrabArea(MultiTouchController.PointInfo touchPoint, T obj);
+    public boolean pointInObjectGrabArea(PointInfo touchPoint, T obj);
 
     /**
      * Get the screen coords of the dragged object's origin, and scale
@@ -35,7 +35,7 @@ public interface MultiTouchObjectCanvas<T> {
      * @param objPosAndScaleOut Output parameter: You need to call objPosAndScaleOut.set()
      * to record the current position and scale of obj.
      */
-    public void getPositionAndScale(T obj, MultiTouchController.PositionAndScale objPosAndScaleOut);
+    public void getPositionAndScale(T obj, PositionAndScale objPosAndScaleOut);
 
     /**
      * Callback to update the position and scale (in object coords) of the
@@ -54,8 +54,8 @@ public interface MultiTouchObjectCanvas<T> {
      * or false if the position or scale parameters are out of range
      * for this object.
      */
-    public boolean setPositionAndScale(T obj, MultiTouchController.PositionAndScale newObjPosAndScale,
-                                       MultiTouchController.PointInfo touchPoint);
+    public boolean setPositionAndScale(T obj, PositionAndScale newObjPosAndScale,
+                                       PointInfo touchPoint);
 
     /**
      * Select an object at the given point. Can be used to bring the object to
@@ -65,13 +65,10 @@ public interface MultiTouchObjectCanvas<T> {
      * @param obj The object being selected by single-touch, or null on touch-up.
      * @param touchPoint The current touch point.
      */
-    public void selectObject(T obj, MultiTouchController.PointInfo touchPoint);
+    public void selectObject(T obj, PointInfo touchPoint);
 
     public void deselectAll();
 
-    public boolean deleteSelectedObject();
+    public void canvasTouched();
 
-    public int getSelectedObjectCount();
-
-    public int getObjectCount();
 }
