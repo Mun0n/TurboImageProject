@@ -3,6 +3,7 @@ package com.munon.turboimageproject;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+
 import android.view.View;
 import android.widget.Button;
 import com.munon.turboimageview.TurboImageView;
@@ -11,10 +12,7 @@ import com.munon.turboimageview.TurboImageView;
 public class SampleActivity extends ActionBarActivity {
     private static final String TAG = "SampleActivity";
 
-    private Button drawButton;
     private TurboImageView turboImageView;
-    private Button removeButton;
-    private Button deselectButon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +21,7 @@ public class SampleActivity extends ActionBarActivity {
 
         turboImageView = (TurboImageView) findViewById(R.id.turboImageView);
 
-        drawButton = (Button) findViewById(R.id.addButton);
+        Button drawButton = (Button) findViewById(R.id.addButton);
         drawButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -31,7 +29,7 @@ public class SampleActivity extends ActionBarActivity {
             }
         });
 
-        removeButton = (Button) findViewById(R.id.removeButton);
+        Button removeButton = (Button) findViewById(R.id.removeButton);
         removeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -40,7 +38,7 @@ public class SampleActivity extends ActionBarActivity {
             }
         });
 
-        deselectButon = (Button) findViewById(R.id.deselectButton);
+        Button deselectButon = (Button) findViewById(R.id.deselectButton);
         deselectButon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
