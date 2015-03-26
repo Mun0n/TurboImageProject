@@ -40,7 +40,9 @@ turboImageView.deleteSelectedObject();
 ```java
 turboImageView.deselectAll();
 ```
-* You will find other related methods like, added by [hrules6872](https://github.com/hrules6872) ;-) :
+
+You will find other related methods like, added by [hrules6872](https://github.com/hrules6872) ;-) :
+
 1. deleteAllObjects()
 2. getSelectedObjectCount
 3. setObjectSelectedBorderColor(int borderColor)
