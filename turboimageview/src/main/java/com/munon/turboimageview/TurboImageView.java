@@ -45,7 +45,7 @@ public class TurboImageView extends View implements MultiTouchObjectCanvas<Multi
         setBackgroundColor(Color.TRANSPARENT);
     }
 
-    public void addImage(Context context, int resourceId) {
+    public void addObject(Context context, int resourceId) {
         deselectAll();
 
         ImageObject imageObject = new ImageObject(resourceId, context.getResources());
@@ -139,7 +139,7 @@ public class TurboImageView extends View implements MultiTouchObjectCanvas<Multi
         }
     }
 
-    public boolean deleteSelectedObject() {
+    public boolean removeSelectedObject() {
         boolean deleted = false;
         Iterator<MultiTouchObject> iterator = mImages.iterator();
         while (iterator.hasNext()) {
@@ -153,16 +153,9 @@ public class TurboImageView extends View implements MultiTouchObjectCanvas<Multi
         return deleted;
     }
 
-    public boolean deleteAllObjects() {
-        boolean deleted = false;
-        Iterator<MultiTouchObject> iterator = mImages.iterator();
-        while (iterator.hasNext()) {
-            iterator.remove();
-            deleted = true;
-        }
-
+    public void removeAllObjects() {
+        mImages.clear();
         invalidate();
-        return deleted;
     }
 
     public int getSelectedObjectCount() {
@@ -217,5 +210,32 @@ public class TurboImageView extends View implements MultiTouchObjectCanvas<Multi
 
     public void setSelectOnObjectAdded(boolean selectOnObjectAdded) {
         this.selectOnObjectAdded = selectOnObjectAdded;
+    }
+
+    public void setFlippedHorizontallySelectedObject(boolean flipped) {
+        for (MultiTouchObject imageObject : mImages) {
+            if (imageObject.isSelected()) {
+                imageObject.setFlippedHorizontally(flipped);
+            }
+        }
+        invalidate();
+    }
+
+    public boolean isFlippedHorizontallySelectedObject() {
+        for (MultiTouchObject imageObject : mImages) {
+            if (imageObject.isSelected()) {
+                return imageObject.isFlippedHorizontally();
+            }
+        }
+        return false;
+    }
+
+    public void toggleFlippedHorizontallySelectedObject() {
+        for (MultiTouchObject imageObject : mImages) {
+            if (imageObject.isSelected()) {
+                imageObject.setFlippedHorizontally(!imageObject.isFlippedHorizontally());
+            }
+        }
+        invalidate();
     }
 }

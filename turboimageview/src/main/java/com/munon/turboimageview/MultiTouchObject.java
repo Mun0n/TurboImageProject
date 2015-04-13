@@ -11,63 +11,63 @@ import java.io.Serializable;
 
 public abstract class MultiTouchObject implements Serializable {
 
-    protected boolean mFirstLoad = true;
+    protected boolean firstLoad = true;
 
-    protected transient Paint mPaint = new Paint();
+    protected transient Paint paint = new Paint();
     protected final transient Paint borderPaint = new Paint();
 
     protected static final int DEFAULT_BORDER_COLOR = Color.BLACK;
     protected int borderColor = DEFAULT_BORDER_COLOR;
 
-    protected int mWidth;
-    protected int mHeight;
+    protected int width;
+    protected int height;
 
     // width/height of screen
-    protected int mDisplayWidth;
-    protected int mDisplayHeight;
+    protected int displayWidth;
+    protected int displayHeight;
 
-    protected float mCenterX;
-    protected float mCenterY;
-    protected float mScaleX;
-    protected float mScaleY;
-    protected float mAngle;
+    protected float centerX;
+    protected float centerY;
+    protected float scaleX;
+    protected float scaleY;
+    protected float angle;
 
-    protected float mMinX;
-    protected float mMaxX;
-    protected float mMinY;
-    protected float mMaxY;
+    protected float minX;
+    protected float maxX;
+    protected float minY;
+    protected float maxY;
 
     protected final static int GRAB_AREA_SIZE = 40;
-    protected boolean mIsGrabAreaSelected = false;
-    protected boolean mIsLatestSelected = false;
+    protected boolean isGrabAreaSelected = false;
+    protected boolean isLatestSelected = false;
 
-    protected float mGrabAreaX1;
-    protected float mGrabAreaY1;
-    protected float mGrabAreaX2;
-    protected float mGrabAreaY2;
+    protected float grabAreaX1;
+    protected float grabAreaY1;
+    protected float grabAreaX2;
+    protected float grabAreaY2;
 
-    protected float mStartMidX;
-    protected float mStartMidY;
+    protected float startMidX;
+    protected float startMidY;
+
+    protected boolean flippedHorizontally;
 
     private static final int UI_MODE_ROTATE = 1;
     private static final int UI_MODE_ANISOTROPIC_SCALE = 2;
     protected final int mUIMode = UI_MODE_ROTATE;
-
-    public MultiTouchObject() {
-        // empty constructor
-    }
 
     public MultiTouchObject(Resources res) {
         init(res);
     }
 
     protected void init(Resources res) {
+        flippedHorizontally = false;
+
         DisplayMetrics metrics = res.getDisplayMetrics();
-        mDisplayWidth =
+        displayWidth =
             (res.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
                 ? Math.max(metrics.widthPixels, metrics.heightPixels)
                 : Math.min(metrics.widthPixels, metrics.heightPixels);
-        mDisplayHeight =
+        displayHeight =
             (res.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
                 ? Math.min(metrics.widthPixels, metrics.heightPixels)
                 : Math.max(metrics.widthPixels, metrics.heightPixels);
@@ -104,24 +104,24 @@ public abstract class MultiTouchObject implements Serializable {
      */
     protected boolean setPos(float centerX, float centerY,
                              float scaleX, float scaleY, float angle) {
-        float ws = (mWidth / 2) * scaleX;
-        float hs = (mHeight / 2) * scaleY;
+        float ws = (width / 2) * scaleX;
+        float hs = (height / 2) * scaleY;
 
-        mMinX = centerX - ws;
-        mMinY = centerY - hs;
-        mMaxX = centerX + ws;
-        mMaxY = centerY + hs;
+        minX = centerX - ws;
+        minY = centerY - hs;
+        maxX = centerX + ws;
+        maxY = centerY + hs;
 
-        mGrabAreaX1 = mMaxX - GRAB_AREA_SIZE;
-        mGrabAreaY1 = mMaxY - GRAB_AREA_SIZE;
-        mGrabAreaX2 = mMaxX;
-        mGrabAreaY2 = mMaxY;
+        grabAreaX1 = maxX - GRAB_AREA_SIZE;
+        grabAreaY1 = maxY - GRAB_AREA_SIZE;
+        grabAreaX2 = maxX;
+        grabAreaY2 = maxY;
 
-        mCenterX = centerX;
-        mCenterY = centerY;
-        mScaleX = scaleX;
-        mScaleY = scaleY;
-        mAngle = angle;
+        this.centerX = centerX;
+        this.centerY = centerY;
+        this.scaleX = scaleX;
+        this.scaleY = scaleY;
+        this.angle = angle;
 
         return true;
     }
@@ -130,18 +130,18 @@ public abstract class MultiTouchObject implements Serializable {
      * Return whether or not the given screen coords are inside this image
      */
     public boolean containsPoint(float touchX, float touchY) {
-        return (touchX >= mMinX && touchX <= mMaxX && touchY >= mMinY && touchY <= mMaxY);
+        return (touchX >= minX && touchX <= maxX && touchY >= minY && touchY <= maxY);
     }
 
     public boolean grabAreaContainsPoint(float touchX, float touchY) {
-        return (touchX >= mGrabAreaX1 && touchX <= mGrabAreaX2 &&
-            touchY >= mGrabAreaY1 && touchY <= mGrabAreaY2);
+        return (touchX >= grabAreaX1 && touchX <= grabAreaX2 &&
+            touchY >= grabAreaY1 && touchY <= grabAreaY2);
     }
 
     public void reload(Context context) {
-        mFirstLoad = false; // Let the load know properties have changed so reload those,
+        firstLoad = false; // Let the load know properties have changed so reload those,
         // don't go back and start with defaults
-        load(context, mCenterX, mCenterY);
+        load(context, centerX, centerY);
     }
 
     public abstract void draw(Canvas canvas);
@@ -151,63 +151,63 @@ public abstract class MultiTouchObject implements Serializable {
     public abstract void unload();
 
     public int getWidth() {
-        return mWidth;
+        return width;
     }
 
     public int getHeight() {
-        return mHeight;
+        return height;
     }
 
     public float getCenterX() {
-        return mCenterX;
+        return centerX;
     }
 
     public float getCenterY() {
-        return mCenterY;
+        return centerY;
     }
 
     public float getScaleX() {
-        return mScaleX;
+        return scaleX;
     }
 
     public float getScaleY() {
-        return mScaleY;
+        return scaleY;
     }
 
     public float getAngle() {
-        return mAngle;
+        return angle;
     }
 
     public float getMinX() {
-        return mMinX;
+        return minX;
     }
 
     public float getMaxX() {
-        return mMaxX;
+        return maxX;
     }
 
     public float getMinY() {
-        return mMinY;
+        return minY;
     }
 
     public float getMaxY() {
-        return mMaxY;
+        return maxY;
     }
 
     public void setIsGrabAreaSelected(boolean selected) {
-        mIsGrabAreaSelected = selected;
+        isGrabAreaSelected = selected;
     }
 
     public boolean isGrabAreaSelected() {
-        return mIsGrabAreaSelected;
+        return isGrabAreaSelected;
     }
 
     public boolean isSelected() {
-        return mIsLatestSelected;
+        return isLatestSelected;
     }
 
     public void setSelected(boolean selected) {
-        this.mIsLatestSelected = selected;
+        this.isLatestSelected = selected;
     }
 
     public int getBorderColor() {
@@ -217,5 +217,13 @@ public abstract class MultiTouchObject implements Serializable {
     public void setBorderColor(int borderColor) {
         this.borderColor = borderColor;
         borderPaint.setColor(borderColor);
+    }
+
+    public boolean isFlippedHorizontally() {
+        return flippedHorizontally;
+    }
+
+    public void setFlippedHorizontally(boolean flipped) {
+        this.flippedHorizontally = flipped;
     }
 }

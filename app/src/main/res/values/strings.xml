@@ -1,7 +1,9 @@
 <resources>
-    <string name="app_name">TurboImageProject</string>
+  <string name="app_name">TurboImageProject</string>
 
-    <string name="draw">Draw</string>
+  <string name="add">Add</string>
   <string name="remove">Remove</string>
+  <string name="removeAll">Remove all</string>
   <string name="deselect">Deselect all</string>
+  <string name="flip">Flip horizontally</string>
 </resources>
