@@ -13,7 +13,7 @@ With this ImageView you can drag, resize and rotate your drawables. Easy to impl
 * Add the TurboImageView to your project, via maven
 
 ```gradle
-compile 'com.munon:turboimageview:1.0.6'
+compile 'com.munon:turboimageview:1.1.0'
 ```
 * Add the TurboImageView to your layout, put over other ImageView if you want to set the drawables over it.
 
@@ -39,6 +39,12 @@ turboImageView.deleteSelectedObject();
 
 ```java
 turboImageView.deselectAll();
+```
+
+* To flip an object in a vertical way (Added by [hrules6872](https://github.com/hrules6872), thanks bro)
+
+```java
+turboImageView.toggleFlippedHorizontallySelectedObject();
 ```
 
 You will find other related methods like, added by [hrules6872](https://github.com/hrules6872) ;-) :
