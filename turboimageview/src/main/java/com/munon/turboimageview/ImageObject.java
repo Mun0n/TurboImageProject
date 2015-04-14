@@ -2,7 +2,6 @@ package com.munon.turboimageview;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
@@ -11,8 +10,7 @@ import android.graphics.drawable.Drawable;
 public class ImageObject extends MultiTouchObject {
     private static final double INITIAL_SCALE_FACTOR = 0.15;
 
-    private transient Drawable mDrawable;
-    private Bitmap cancelBitmap;
+    private transient Drawable drawable;
 
     private int mResourceId;
 
@@ -24,19 +22,17 @@ public class ImageObject extends MultiTouchObject {
 
     public ImageObject(ImageObject imageObject, Resources res) {
         super(res);
-        mDrawable = imageObject.mDrawable;
+        drawable = imageObject.drawable;
         mResourceId = imageObject.mResourceId;
-        mScaleX = imageObject.mScaleX;
-        mScaleY = imageObject.mScaleY;
-        mCenterX = imageObject.mCenterX;
-        mCenterY = imageObject.mCenterY;
-        mAngle = imageObject.mAngle;
+        scaleX = imageObject.scaleX;
+        scaleY = imageObject.scaleY;
+        centerX = imageObject.centerX;
+        centerY = imageObject.centerY;
+        angle = imageObject.angle;
         initPaint();
     }
 
     public void initPaint() {
-        //cancelBitmap = BitmapFactory.decodeResource(res, R.drawable.cancel);
-
         borderPaint.setStyle(Paint.Style.STROKE);
         borderPaint.setColor(borderColor);
         borderPaint.setAntiAlias(true);
@@ -47,21 +43,27 @@ public class ImageObject extends MultiTouchObject {
     public void draw(Canvas canvas) {
         canvas.save();
 
-        float dx = (mMaxX + mMinX) / 2;
-        float dy = (mMaxY + mMinY) / 2;
+        float dx = (maxX + minX) / 2;
+        float dy = (maxY + minY) / 2;
 
-        mDrawable.setBounds((int) mMinX, (int) mMinY, (int) mMaxX, (int) mMaxY);
-
+        drawable.setBounds((int) minX, (int) minY, (int) maxX, (int) maxY);
+        if (flippedHorizontally) {
+            canvas.scale(-1f, 1f, dx, dy);
+        }
         canvas.translate(dx, dy);
-        canvas.rotate(mAngle * 180.0f / (float) Math.PI);
+        if (flippedHorizontally) {
+            canvas.rotate(-angle * 180.0f / (float) Math.PI);
+        } else {
+            canvas.rotate(angle * 180.0f / (float) Math.PI);
+        }
         canvas.translate(-dx, -dy);
 
-        mDrawable.draw(canvas);
+        drawable.draw(canvas);
 
-        if (mIsLatestSelected) {
-            canvas.drawRect((int) mMinX, (int) mMinY, (int) mMaxX, (int) mMaxY, borderPaint);
+        if (isLatestSelected) {
+            canvas.drawRect((int) minX, (int) minY, (int) maxX, (int) maxY, borderPaint);
             /*Ready to show an X button to delete the view but impossible to detect when that X button is touched*/
-            //canvas.drawBitmap(cancelBitmap, mMinX - (cancelBitmap.getWidth() / 2), mMinY - (cancelBitmap.getHeight() / 2), new Paint());
+            //canvas.drawBitmap(cancelBitmap, minX - (cancelBitmap.getWidth() / 2), minY - (cancelBitmap.getHeight() / 2), new Paint());
         }
 
         canvas.restore();
@@ -72,7 +74,7 @@ public class ImageObject extends MultiTouchObject {
      */
     @Override
     public void unload() {
-        this.mDrawable = null;
+        this.drawable = null;
     }
 
     /** Called by activity's onResume() method to load the images */
@@ -82,35 +84,35 @@ public class ImageObject extends MultiTouchObject {
         Resources res = context.getResources();
         init(res);
 
-        mStartMidX = startMidX;
-        mStartMidY = startMidY;
+        this.startMidX = startMidX;
+        this.startMidY = startMidY;
 
-        mDrawable = res.getDrawable(mResourceId);
+        drawable = res.getDrawable(mResourceId);
 
-        mWidth = mDrawable.getIntrinsicWidth();
-        mHeight = mDrawable.getIntrinsicHeight();
+        width = drawable.getIntrinsicWidth();
+        height = drawable.getIntrinsicHeight();
 
         float centerX;
         float centerY;
         float scaleX;
         float scaleY;
         float angle;
-        if (mFirstLoad) {
+        if (firstLoad) {
             centerX = startMidX;
             centerY = startMidY;
 
-            float scaleFactor = (float) (Math.max(mDisplayWidth, mDisplayHeight) /
-                (float) Math.max(mWidth, mHeight) * INITIAL_SCALE_FACTOR);
+            float scaleFactor = (float) (Math.max(displayWidth, displayHeight) /
+                (float) Math.max(width, height) * INITIAL_SCALE_FACTOR);
             scaleX = scaleY = scaleFactor;
             angle = 0.0f;
 
-            mFirstLoad = false;
+            firstLoad = false;
         } else {
-            centerX = mCenterX;
-            centerY = mCenterY;
-            scaleX = mScaleX;
-            scaleY = mScaleY;
-            angle = mAngle;
+            centerX = this.centerX;
+            centerY = this.centerY;
+            scaleX = this.scaleX;
+            scaleY = this.scaleY;
+            angle = this.angle;
         }
         setPos(centerX, centerY, scaleX, scaleY, angle);
     }

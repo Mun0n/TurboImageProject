@@ -5,7 +5,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 
 import android.view.View;
-import android.widget.Button;
 import com.munon.turboimageview.MultiTouchObject;
 import com.munon.turboimageview.TurboImageView;
 import com.munon.turboimageview.TurboImageViewListener;
@@ -24,28 +23,39 @@ public class SampleActivity extends ActionBarActivity implements TurboImageViewL
         turboImageView = (TurboImageView) findViewById(R.id.turboImageView);
         turboImageView.setListener(this);
 
-        Button drawButton = (Button) findViewById(R.id.addButton);
-        drawButton.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.addButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                turboImageView.addImage(SampleActivity.this, R.drawable.ic_launcher);
+                turboImageView.addObject(SampleActivity.this, R.drawable.ic_launcher);
             }
         });
 
-        Button removeButton = (Button) findViewById(R.id.removeButton);
-        removeButton.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.removeButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean deleted = turboImageView.deleteSelectedObject();
+                boolean deleted = turboImageView.removeSelectedObject();
                 Log.d(TAG, "deleted: " + deleted);
             }
         });
 
-        Button deselectButon = (Button) findViewById(R.id.deselectButton);
-        deselectButon.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.removeAllButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                turboImageView.removeAllObjects();
+            }
+        });
+
+        findViewById(R.id.deselectButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 turboImageView.deselectAll();
+            }
+        });
+
+        findViewById(R.id.flipButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                turboImageView.toggleFlippedHorizontallySelectedObject();
             }
         });
     }

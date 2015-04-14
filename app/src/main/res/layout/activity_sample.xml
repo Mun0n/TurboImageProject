@@ -20,18 +20,52 @@
       />
 
   <LinearLayout
+      android:id="@+id/layout2"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      android:weightSum="2"
+      android:layout_alignParentBottom="true"
+      >
+
+    <Button
+        android:id="@+id/deselectButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/deselect"
+        android:layout_weight="1"
+        android:singleLine="true"
+        android:ellipsize="middle"
+        />
+
+    <Button
+        android:id="@+id/flipButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/flip"
+        android:layout_weight="1"
+        android:singleLine="true"
+        android:ellipsize="middle"
+        />
+
+  </LinearLayout>
+
+  <LinearLayout
+      android:id="@+id/layout1"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="horizontal"
       android:weightSum="3"
-      android:layout_alignParentBottom="true"
+      android:layout_above="@id/layout2"
       >
     <Button
         android:id="@+id/addButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/draw"
+        android:text="@string/add"
         android:layout_weight="1"
+        android:singleLine="true"
+        android:ellipsize="middle"
         />
 
     <Button
@@ -40,14 +74,19 @@
         android:layout_height="wrap_content"
         android:text="@string/remove"
         android:layout_weight="1"
+        android:singleLine="true"
+        android:ellipsize="middle"
         />
 
+
     <Button
-        android:id="@+id/deselectButton"
+        android:id="@+id/removeAllButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/deselect"
+        android:text="@string/removeAll"
         android:layout_weight="1"
+        android:singleLine="true"
+        android:ellipsize="middle"
         />
 
   </LinearLayout>
