@@ -1,8 +1,10 @@
 package com.munon.turboimageview;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -46,19 +48,34 @@ public class TurboImageView extends View implements MultiTouchObjectCanvas<Multi
     }
 
     public void addObject(Context context, int resourceId) {
+        ImageObject imageObject = new ImageObject(resourceId, context.getResources());
+        addObject(context, imageObject);
+    }
+
+    public void addObject(Context context, Drawable drawable) {
+        ImageObject imageObject = new ImageObject(drawable, context.getResources());
+        addObject(context, imageObject);
+    }
+
+    public void addObject(Context context, Bitmap bitmap) {
+        ImageObject imageObject = new ImageObject(bitmap, context.getResources());
+        addObject(context, imageObject);
+    }
+
+    private void addObject(Context context, ImageObject imageObject) {
         deselectAll();
 
-        ImageObject imageObject = new ImageObject(resourceId, context.getResources());
         imageObject.setSelected(selectOnObjectAdded);
         imageObject.setBorderColor(objectBorderColor);
         mImages.add(imageObject);
 
         float cx = getX() + getWidth() / 2;
         float cy = getY() + getHeight() / 2;
-        mImages.get(mImages.size() - 1).load(context, cx, cy);
+        mImages.get(mImages.size() - 1).init(context, cx, cy);
 
         invalidate();
     }
+
 
     public void setObjectSelectedBorderColor(int borderColor) {
         this.objectBorderColor = borderColor;

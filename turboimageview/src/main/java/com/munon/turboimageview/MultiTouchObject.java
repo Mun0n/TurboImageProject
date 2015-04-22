@@ -139,14 +139,14 @@ public abstract class MultiTouchObject implements Serializable {
     }
 
     public void reload(Context context) {
-        firstLoad = false; // Let the load know properties have changed so reload those,
+        firstLoad = false; // Let the init know properties have changed so reload those,
         // don't go back and start with defaults
-        load(context, centerX, centerY);
+        init(context, centerX, centerY);
     }
 
     public abstract void draw(Canvas canvas);
 
-    public abstract void load(Context context, float startMidX, float startMidY);
+    public abstract void init(Context context, float startMidX, float startMidY);
 
     public abstract void unload();
 

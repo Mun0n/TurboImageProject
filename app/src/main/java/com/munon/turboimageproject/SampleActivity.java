@@ -1,5 +1,9 @@
 package com.munon.turboimageproject;
 
+import android.content.Context;
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -8,6 +12,8 @@ import android.view.View;
 import com.munon.turboimageview.MultiTouchObject;
 import com.munon.turboimageview.TurboImageView;
 import com.munon.turboimageview.TurboImageViewListener;
+import java.io.IOException;
+import java.io.InputStream;
 
 
 public class SampleActivity extends ActionBarActivity implements TurboImageViewListener {
@@ -26,7 +32,7 @@ public class SampleActivity extends ActionBarActivity implements TurboImageViewL
         findViewById(R.id.addButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                turboImageView.addObject(SampleActivity.this, R.drawable.ic_launcher);
+                turboImageView.addObject(SampleActivity.this, getBitmapFromAsset(SampleActivity.this, "bitmaps/bitmap.png"));
             }
         });
 
@@ -74,5 +80,19 @@ public class SampleActivity extends ActionBarActivity implements TurboImageViewL
     public void onCanvasTouched() {
         turboImageView.deselectAll();
         Log.d(TAG, "canvas touched");
+    }
+
+    public static Bitmap getBitmapFromAsset(Context context, String filePath) {
+        AssetManager assetManager = context.getAssets();
+
+        InputStream inputStream;
+        Bitmap bitmap = null;
+        try {
+            inputStream = assetManager.open(filePath);
+            bitmap = BitmapFactory.decodeStream(inputStream);
+        } catch (IOException ignored) {
+        }
+
+        return bitmap;
     }
 }

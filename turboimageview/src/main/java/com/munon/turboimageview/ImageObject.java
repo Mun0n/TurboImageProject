@@ -2,9 +2,11 @@ package com.munon.turboimageview;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
 public class ImageObject extends MultiTouchObject {
@@ -12,23 +14,21 @@ public class ImageObject extends MultiTouchObject {
 
     private transient Drawable drawable;
 
-    private int mResourceId;
-
     public ImageObject(int resourceId, Resources res) {
         super(res);
-        mResourceId = resourceId;
+        drawable = res.getDrawable(resourceId);
         initPaint();
     }
 
-    public ImageObject(ImageObject imageObject, Resources res) {
+    public ImageObject(Drawable drawable, Resources res) {
         super(res);
-        drawable = imageObject.drawable;
-        mResourceId = imageObject.mResourceId;
-        scaleX = imageObject.scaleX;
-        scaleY = imageObject.scaleY;
-        centerX = imageObject.centerX;
-        centerY = imageObject.centerY;
-        angle = imageObject.angle;
+        this.drawable = drawable;
+        initPaint();
+    }
+
+    public ImageObject(Bitmap bitmap, Resources res) {
+        super(res);
+        this.drawable = new BitmapDrawable(res, bitmap);
         initPaint();
     }
 
@@ -77,17 +77,15 @@ public class ImageObject extends MultiTouchObject {
         this.drawable = null;
     }
 
-    /** Called by activity's onResume() method to load the images */
+    /** Called by activity's onResume() method to init the images */
     @SuppressWarnings("deprecation")
     @Override
-    public void load(Context context, float startMidX, float startMidY) {
+    public void init(Context context, float startMidX, float startMidY) {
         Resources res = context.getResources();
         init(res);
 
         this.startMidX = startMidX;
         this.startMidY = startMidY;
-
-        drawable = res.getDrawable(mResourceId);
 
         width = drawable.getIntrinsicWidth();
         height = drawable.getIntrinsicHeight();
