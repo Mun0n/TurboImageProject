@@ -13,7 +13,7 @@ With this ImageView you can drag, resize and rotate your drawables. Easy to impl
 * Add the TurboImageView to your project, via maven
 
 ```gradle
-compile 'com.munon:turboimageview:1.1.0'
+compile 'com.munon:turboimageview:1.2.0'
 ```
 * Add the TurboImageView to your layout, put over other ImageView if you want to set the drawables over it.
 
