@@ -114,4 +114,18 @@ public class ImageObject extends MultiTouchObject {
         }
         setPos(centerX, centerY, scaleX, scaleY, angle);
     }
+    
+    public void drawOnCanvas(Canvas canvas) {
+        for (MultiTouchObject imageObject : mImages) {
+            imageObject.draw(canvas);
+        }
+    }
+
+    public void drawOnBitmap(Bitmap bitmap) {
+        Canvas canvas = new Canvas(bitmap);
+        drawOnCanvas(canvas);
+        canvas.save();
+        canvas.restore();
+        canvas = null;
+    }
 }
