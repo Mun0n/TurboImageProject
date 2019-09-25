@@ -13,7 +13,7 @@ With this ImageView you can drag, resize and rotate your drawables. Easy to impl
 * Add the TurboImageView to your project, via maven
 
 ```gradle
-compile 'com.munon:turboimageview:1.0.6'
+compile 'com.munon:turboimageview:1.2.0'
 ```
 * Add the TurboImageView to your layout, put over other ImageView if you want to set the drawables over it.
 
@@ -23,16 +23,24 @@ compile 'com.munon:turboimageview:1.0.6'
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 ```
-* Load the images in your activity using the loadImages method:
+* Load the images in your activity using the loadImages method (you can add a resource, drawable or bitmap):
 
 ```java
-turboImageView.loadImages(this, R.drawable.ic_launcher);
+turboImageView.addObject(this, R.drawable.ic_launcher);
+````
+
+```java
+turboImageView.addObject(this, drawable);
+````
+
+```java
+turboImageView.addObject(this, bitmap);
 ````
 
 * Remove the last selected view using the deleteSelected method:
 
 ```java
-turboImageView.deleteSelectedObject();
+turboImageView.removeSelectedObject();
 ```
 
 * If you need to remove the selected view (for example to make a screenshot), you will need this method:
@@ -41,9 +49,15 @@ turboImageView.deleteSelectedObject();
 turboImageView.deselectAll();
 ```
 
+* To flip an object in a vertical way (Added by [hrules6872](https://github.com/hrules6872), thanks bro)
+
+```java
+turboImageView.toggleFlippedHorizontallySelectedObject();
+```
+
 You will find other related methods like, added by [hrules6872](https://github.com/hrules6872) ;-) :
 
-1. deleteAllObjects()
+1. removeAllObjects()
 2. getSelectedObjectCount
 3. setObjectSelectedBorderColor(int borderColor)
 
